@@ -14,11 +14,10 @@ struct character {
 
 class myComparator { 
 public: 
-    int operator() (const character& p1, const character& p2) 
-    { 
+    int operator() (const character& p1, const character& p2) { 
         return p1.freq > p2.freq; 
     } 
-}; 
+};
 
 map<char, character> freqCounts;
 priority_queue<character, vector<character>, myComparator> L;
@@ -38,9 +37,8 @@ void gatherFrequencies() {
 }
 
 void sortFrequencies() {
-    for (auto key : freqCounts) {
+    for (auto key : freqCounts)
         L.push(key.second);
-    }
 }
 
 int main() {
