@@ -2,6 +2,7 @@
 #include <fstream>
 #include <map>
 #include <queue>
+#include <string>
 
 using namespace std;
 
@@ -21,13 +22,14 @@ public:
 
 map<char, character> freqCounts;
 priority_queue<character, vector<character>, myComparator> L;
+map<string, char> codes;
 
 void gatherFrequencies() {
     ifstream data("message.txt");
 
     char c;
     character temp;
-    while(data >> c) {
+    while(data.get(c)) {
         if (freqCounts.find(c) != freqCounts.end()){
             freqCounts[c].freq++;
         }
@@ -41,36 +43,54 @@ void gatherFrequencies() {
 void sortFrequencies() {
     for (auto key : freqCounts) {
         L.push(key.second);
-        cout << key.first << " | " << key.second.freq << endl;
     }
 }
 
-// void combineNodes() {
-//     character* Nleft;
-//     character* Nright;
+void combineNodes() {
+    character Nleft;
+    character Nright;
 
-//     Nleft = L.top();
-//     L.pop();
-//     Nright = L.top();
-//     L.pop();
+    Nleft = L.top();
+    L.pop();
+    Nright = L.top();
+    L.pop();
 
-//     int newFreq = Nleft->freq + Nright->freq;
-//     cout << Nleft->freq << " | " << Nright->freq << endl;
-//     character N = {'~', newFreq, Nleft, Nright};
-//     character* Nptr = &N;
-//     L.push(Nptr);
+    int newFreq = Nleft.freq + Nright.freq;
+    character N = {'~', newFreq, &Nleft, &Nright};
+    L.push(N);
+}
 
-//     cout << N.element << " | " << N.freq << " | " << N.lptr->element << " | " << N.rptr->element << endl;
-// }
+void makeHuffmanTree() {
+    while(L.size() > 1) {
+        combineNodes();
+    }
+}
 
-// void makeHuffmanTree() {
-
-// }
+void traverseHuffmanTree(const character* node, string binCode = "") {
+    cout << "Node: " << node->element << endl;
+    if(node->lptr == NULL && node->rptr == NULL) {
+        cout << "Code: " << binCode << endl;
+        codes.insert({binCode, node->element});
+    }
+    cout << "---checking left---" << endl;
+    if(node->lptr != NULL) {
+        traverseHuffmanTree(node->lptr, binCode+"0");
+    }
+    cout << "---checking right---" << endl;
+    if(node->rptr != NULL) {
+        traverseHuffmanTree(node->lptr, binCode+"1");
+    }
+}
 
 int main() {
     gatherFrequencies();
     sortFrequencies();
-    // combineNodes();
+    makeHuffmanTree();
+    const character root = L.top();
+    traverseHuffmanTree(&root);
+    for (auto key : codes) {
+        cout << key.first << "\t" << key.second << endl;
+    }
 
     return 1;
 }
