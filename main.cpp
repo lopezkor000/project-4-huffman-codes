@@ -118,9 +118,11 @@ void decode(){
 	string code;
 	while (encoded.get(c)){
 		code += c;
-		if (codes[code] == '~'){
+
+		if (codes.find(code) == codes.end()){
 			continue;
 		}
+		
 		decoded << codes[code];
 		code = "";
 	}
