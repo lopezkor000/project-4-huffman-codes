@@ -1,4 +1,0 @@
-This is my message
-It will be encoded
-Then decoded
-Hello, World!
